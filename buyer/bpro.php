@@ -24,7 +24,7 @@ function dateDiffInDays($fdate, $tdate)
   
 $dateDiff = dateDiffInDays($fdate, $tdate); 
   
-  $up=$price*$dateDiff;
+$up=$price*$dateDiff;
 
 $select5="select quantity from product where product_id='$pid'";
 $res5=mysqli_query($con,$select5);
@@ -40,15 +40,15 @@ $nqty=($bb-$qty);
 
 						//if(($rwh['0']='$cardno') && ($rwh['1']='$cvv'))
 						//{
-						$sql="insert into booking values(NULL,'$date',$pid,$userid,$qty,$up,0,'$fdate','$tdate')";
+              $newPrice = ($price * $qty) * $dateDiff;
+						$sql="insert into booking values(NULL,'$date',$pid,$userid,$qty,$newPrice,0,'$fdate','$tdate')";
 $res1=mysqli_query($con,$sql);
 $sql3 = "SELECT seller_id FROM product where product_id='$pid';";
 $results = mysqli_query($con, $sql3);
 $row = mysqli_fetch_assoc($results);
 $seller_id = $row['seller_id'];
-$newPrice = $price * $qty;
-$sql2 = "INSERT INTO receipt(date,userid,product_id,seller_id,quantity,price,fdate, tdate) VALUES('$date','$userid','$pid','$seller_id','$qty','$newPrice','$fdate','$tdate');";
-mysqli_query($con, $sql2);
+// $sql2 = "INSERT INTO receipt(date,userid,product_id,seller_id,quantity,price,fdate, tdate) VALUES('$date','$userid','$pid','$seller_id','$qty','$newPrice','$fdate','$tdate');";
+// mysqli_query($con, $sql2);
 $update="update stock set quantity=$nqty where product_id='$pid'";
 $resu=mysqli_query($con,$update);
 $update1="update product set quantity=$nqty where product_id='$pid'";

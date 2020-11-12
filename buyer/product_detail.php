@@ -119,8 +119,8 @@ while($row=mysqli_fetch_array($result)){
 									<h5 style="color:#0000FF">Product Name: <?php echo $row[2];?></h5><br>
 									<h5 style="color:#0000FF">Company Name: <?php echo $row[14];?></h5><br>
 									<?php
-while($rowa=mysqli_fetch_array($resa)){
-?>				
+										while($rowa=mysqli_fetch_array($resa)){
+									?>				
 									<h5 style="color:#0000FF">Store Name: <?php echo $rowa[0];?></h5><br>
 									<h5 style="color:#0000FF">GST Number: <?php echo $rowa[3];?></h5><br>
 									<h5 style="color:#0000FF">Seller Name: <?php echo $rowa[1];?>&nbsp;<?php echo $rowa[2];?></h5><br>

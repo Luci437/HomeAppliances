@@ -113,9 +113,9 @@ while($row=mysqli_fetch_array($result)){
 									<td><br><br><b><?php echo $row['count'];?></b>
 									</td>
 									
-									<td><br><br><b><?php echo $row['total'];?>/-</b></td>
+									<td><br><br><b><?php echo $row['rent'];?>/-</b></td>
 									
-									<td><input type="hidden" name="price" value="<?php echo $row['total'];?>"><input type="hidden" name="pid" value="<?php echo $row['product_id'];?>"></td>
+									<td><input type="hidden" name="price" value="<?php echo $row['rent'];?>"><input type="hidden" name="pid" value="<?php echo $row['product_id'];?>"></td>
 									<td><br><br><input type="submit" name="submit" value="Book Now" style="background-color:#0000FF;padding:7px;color:#FFFFFF">
 									 <a href="delcart.php?id=<?php echo $row['wid'];?>" style="color:#FF0000" > Delete</a></td>
 									

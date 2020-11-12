@@ -141,11 +141,11 @@ while($rowa=mysqli_fetch_array($resa)){
 											<tbody>
 												<tr class="">
 													<th>Size</th>
-													<td><?php echo $row[15];?></td>
+													<td><?php echo $row[14];?></td>
 												</tr>		
 												<tr class="alt">
 													<th>Colour</th>
-													<td><?php echo $row[16];?></td>
+													<td><?php echo $row[15];?></td>
 												</tr>
 											</tbody>
 										</table>
