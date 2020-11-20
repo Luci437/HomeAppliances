@@ -23,6 +23,7 @@
 		<script src="themes/js/superfish.js"></script>	
 		<script src="themes/js/jquery.scrolltotop.js"></script>
 		<script src="themes/js/jquery.fancybox.js"></script>
+		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 		
 	</head>
     <body>		
@@ -67,8 +68,11 @@
 								  include("dbcon.php");
 								  $id=$_GET["id"];
 //$qry="select * from login,role where login.role_id=role.role_id";
-      $qry="select * from product where product_id='$id'";
+	  $qry="select * from product where product_id='$id'";
 $result=mysqli_query($con,$qry);
+$result2=mysqli_query($con,$qry);
+$ans = mysqli_fetch_assoc($result2);
+echo '<input type="hidden" id="sellerId" value="'.$ans["seller_id"].'">';
  $qa="select seller.store_name,seller.first_name,seller.last_name,seller.gst_no from seller,product where seller.seller_id=product.seller_id and product.product_id='$id'";
 $resa=mysqli_query($con,$qa);
 
@@ -128,14 +132,80 @@ while($rowa=mysqli_fetch_array($resa)){
 								</form> <br>
 							</div>							
 						</div>
+						<script>
+							function checkRating(val) {
+								let el1 = document.getElementsByClassName('ratingStar');
+
+								for(let i=0;i<val;i++) {
+									el1[i].style.color = "yellow";
+								}
+								for(let j=val;j<el1.length;j++) {
+									el1[j].style.color = "red";
+								}
+							}
+
+							function catchStar(rate) {
+								let rating = $(rate).val();
+								let sellerId = $('#sellerId').val();
+								$.ajax({
+									url: "putRating.ajax.php",
+									type: 'POST',
+									data: {
+										rating: rating,
+										sellerId: sellerId
+									},
+									success: function(dataResult) {
+										checkRating(dataResult);
+									}
+								});
+							}
+							setTimeout(() => {
+								let rating = $('#ratings').val();
+								checkRating(rating);
+							}, 100);
+						</script>
 						<div class="row">
+							<?php
+								require "dbcon.php";
+								if(isset($_SESSION['userid'])) {
+									$uid = $_SESSION['userid'];
+									$pid = $_GET['id'];
+									$sql1 = "SELECT * FROM product WHERE product_id='$pid';";
+									$res = mysqli_fetch_assoc(mysqli_query($con, $sql1));
+									$seller_id = $res['seller_id'];
+	
+									$sql2 = "SELECT * FROM sellerrating WHERE user_id='$uid' AND seller_id='$seller_id';";
+									$rep = mysqli_fetch_assoc(mysqli_query($con, $sql2));
+									echo '<input type="hidden" id="ratings" value="'.$rep['rating'].'">';
+								}
+
+							?>
 							<div class="span12">
 								<ul class="nav nav-tabs" id="myTab">
-									<li class="active"><a href="#home"><h4>Description</h4></a></li>
+									<li class="active"><a href="#home"><h4>Ratings</h4></a></li>
 									<li class=""><a href="#profile"><h4>Additional Information</h4></a></li>
 								</ul>							 
 								<div class="tab-content">
-									<div class="tab-pane active" id="home"><?php echo $row[3];?></div>
+									<div class="tab-pane active" id="home">
+										<?php
+
+										if(isset($_SESSION['userid'])) {
+											echo '
+										<div class="rating-box">
+											<input type="radio" id="star1" name="rating" value="1" onclick="catchStar(this)" class="ratingInput">
+											<label for="star1"><i class="fas fa-star ratingStar" onmouseover="checkRating(1)"></i></label>
+											<input type="radio" id="star2" name="rating" value="2" onclick="catchStar(this)" class="ratingInput">
+											<label for="star2"><i class="fas fa-star ratingStar" onmouseover="checkRating(2)"></i></label>
+											<input type="radio" id="star3" name="rating" value="3" onclick="catchStar(this)" class="ratingInput">
+											<label for="star3"><i class="fas fa-star ratingStar" onmouseover="checkRating(3)"></i></label>
+											<input type="radio" id="star4" name="rating" value="4" onclick="catchStar(this)" class="ratingInput">
+											<label for="star4"><i class="fas fa-star ratingStar" onmouseover="checkRating(4)"></i></label>
+											<input type="radio" id="star5" name="rating" value="5" onclick="catchStar(this)" class="ratingInput">
+											<label for="star5"><i class="fas fa-star ratingStar" onmouseover="checkRating(5)"></i></label>
+										</div>';
+										}
+										?>
+									</div>
 									<div class="tab-pane" id="profile">
 										<table class="table table-striped shop_attributes">	
 											<tbody>
@@ -155,6 +225,26 @@ while($rowa=mysqli_fetch_array($resa)){
 							<?php
 								}
 								?>						
+								<style>
+									.rating-box {
+										position: relative;
+										padding: 10px;
+										display: flex;
+										column-gap: 16px;
+									}
+									.ratingInput {
+										display: none;
+									}
+									.ratingStar {
+										font-size: 44px;
+										color: red;
+										position: relative;
+										overflow: hidden;
+									}
+									.ratingStar:hover {
+										color: yellow;
+									}
+								</style>
 							<div class="span9">	
 								<br>
 								<!--

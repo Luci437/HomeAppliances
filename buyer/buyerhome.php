@@ -30,9 +30,38 @@ if(!isset($_SESSION['username'])) { //if not yet logged in
 		<script src="bootstrap/js/bootstrap.min.js"></script>				
 		<script src="themes/js/superfish.js"></script>	
 		<script src="themes/js/jquery.scrolltotop.js"></script>
+		<style>
+			.reg-complaint {
+				position: absolute;
+				left: 50%;
+				transform: translateX(-50%);
+				padding: 10px;
+				color: #fff;
+				background: black;
+				border-radius: 8px;
+				top: 10px;
+				z-index: 2;
+				animation: fade 3s 1s forwards;
+			}
+			@keyframes fade {
+				from {
+					opacity: 1;
+				}
+				to {
+					opacity: 0;
+				}
+			}
+		</style>
 		
 	</head>
-    <body style="background-image:url(themes/images/iiii.jpg);background-size:cover;">		
+	<body style="background-image:url(themes/images/iiii.jpg);background-size:cover;">		
+	  <?php
+	  	if(isset($_GET['success'])) {
+			if($_GET['success'] == 'ComplaintRegistered') {
+				echo "<h5 class='reg-complaint'>Complaint Registered Successfully.</h5>";
+			}
+		  }
+	  ?>
 		<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
@@ -70,6 +99,7 @@ if(!isset($_SESSION['username'])) { //if not yet logged in
 								<ul>									
 									<li><a href="editprofile.php">Edit Profile</a></li>
 									<li><a href="changepass.php">Change Password</a></li>
+									<li><a href="returnitems.php">Return Item</a></li>
 									<li><a href="logout.php">Logout</a></li>
 									
 									

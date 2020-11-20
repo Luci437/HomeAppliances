@@ -7,9 +7,7 @@ if(!isset($_SESSION['username'])) {
   } 
 	include("dbcon.php");
 
-?>
-
-     
+   ?>  
 
 <!DOCTYPE HTML>
 <html>
@@ -71,71 +69,89 @@ th {
     font-family: helvetica;
     font-weight: bolder;
 }
+.view-request-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 5%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
+}
 </style>
 
 
 </head> 
 <body>
    
-    <div style="margin-left: 300px;max-width: 200px;">
-         <?php
-//$qry="select * from login,role where login.role_id=role.role_id";
-      $qry="select * from seller,login,place where seller.userid=login.userid and seller.place_id=place.place_id and seller.status=1";
-$result=mysqli_query($con,$qry);
-if(isset($_POST['delete']))
-{
-
-$l=$_POST["userid"];
-$sql2="UPDATE `seller` SET `status`='0' WHERE `userid`='$l'";
-$result2=mysqli_query($con,$sql2) or die("error");
-$sql3="UPDATE `login` SET `status`='0' WHERE `userid`='$l'";
-$result3=mysqli_query($con,$sql3) or die("error");
-echo "<script> alert('delete successfull');</script>";
-header("location:blockseller.php");
-}
-?>
-<table >
-  <tr>
-    <td >&nbsp;</td>
-    <td >
-      <tr>
-        
-        <th>Username</th>
-        <th>First Name</th>
-         <th>Last Name</th>
-        <th>Store Name</th>
-        <th>Mobile Number</th>
-        <th>Email</th>
-        
-        <th>Place Name</th>
-        <th>Gst Number</th>
-        <th></th>
-        <th></th>
-      </tr>
- <?php
-while($row=mysqli_fetch_array($result)){
-?><form action="#" method="post">
-      <tr>
-        
-        <td><?php echo $row['username'];?></td>
-        <td><?php echo $row['first_name'];?></td>
-         <td><?php echo $row['last_name'];?></td>
-        <td><?php echo $row['store_name'];?></td>
-        <td><?php echo $row['mobile_number'];?></td>
-        <td><?php echo $row['email'];?></td>
-        
-        <td><?php echo $row['place_name'];?></td>
-        <td><?php echo $row['gst_no'];?></td>
-         <td><input class="txt" type="hidden" name="userid" value="<?php echo $row['userid'];?>"></td>
-        <td><input type="submit" name="delete" class="btn btn-inverse large" value="BLOCK"></td>
-        
-      </tr></form>
-      <?php
-}
-?>
+<div class="view-request-container">
+    <table style="width: 60%;">
+        <tr>
+            <th colspan="5" style="text-align: center;">View Return Request</th>
+        </tr>
+        <tr>
+            <td>
+                <h5>Receipt Id</h5>
+            </td>
+            <td>
+                <h5>Name</h5>
+            </td>
+            <td>
+                <h5>Item</h5>
+            </td>
+            <td>
+                <h5>Total</h5>
+            </td>
+            <td>
+                <h5>Action</h5>
+            </td>
+        </tr>
+        <?php
+            require "dbcon.php";
+            $sql ="select receipt.*,product.product_name,seller.first_name,product.color,product.size,product.company from receipt,product,seller,login WHERE receipt.product_id=product.product_id and receipt.seller_id=seller.seller_id and receipt.userid=login.userid AND receipt.status='Requested';"; 
+            $result = mysqli_query($con, $sql);
+            $cont = mysqli_num_rows($result);
+            while($row = mysqli_fetch_assoc($result)) {
+                $rid = $row['rid'];
+                echo '<tr>
+                        <td>
+                            <h6>
+                                '.$row['rid'].'
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                '.$row['first_name'].'
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                '.$row['product_name'].'
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                '.$row['price'].'
+                            </h6>
+                        </td>
+                        <td>
+                            <h6>
+                                <a href="adminRequestAction.php?rid='.$rid.'" style="color: red;">Respond</a>
+                            </h6>
+                        </td>
+                    </tr>';
+            }
+            if($cont == 0) {
+                echo '<tr>
+                        <td colspan="5">
+                            <h4 style="text-align: center;">No return request</h4>
+                        </td>
+                    </tr>';
+            }
+        ?>
     </table>
-       
-    </div>
+</div>
      
    <div class="page-container">
    
@@ -181,20 +197,15 @@ while($row=mysqli_fetch_array($result)){
                                                                                              <li id="menu-academico-boletim" ><a href="adddistrict.php">District</a></li>
                                                                                              <li id="menu-academico-boletim" ><a href="addplace.php">Place</a></li>
                                                                                              <li id="menu-academico-boletim" ><a href="addcategory.php">Category</a></li>
-                                                                                           
+                                                                                             
 											  </ul>
 										 </li>
-                  <li><a href="viewpdt.php"><i class="fa fa-table"></i> <span>View Products</span></a></li>
-                  <li><a id="showComplaintBox" onclick="showComplaintBox();" href="#"><i class="fa fa-table"></i> <span>View Complaints</span></a></li>
+									<li><a href="viewpdt.php"><i class="fa fa-table"></i> <span>View Products</span></a></li>
 									
 										
 									  </ul>
 								
-								  <script>
-                    function showComplaintBox() {
-                      $('.complaint-box').css("display","flex");
-                    }
-                  </script>
+								  
 								</div>
 							  </div>
 							  <div class="clearfix"></div>		
@@ -231,55 +242,5 @@ while($row=mysqli_fetch_array($result)){
 
 <!-- Bootstrap Core JavaScript -->
    <script src="js/bootstrap.min.js"></script>
-
-   <div class="complaint-box">
-        <div class="inside-box">
-              <table style="min-width: 400px;">
-                    <tr>
-                      <th style="text-align: center;" colspan="2">
-                        <h3>View Complaints</h3>
-                      </th>
-                    </tr>
-                    <?php
-                      require "dbcon.php";
-                      $sql = "SELECT com.complaint,com.seller_id,sel.store_name FROM complaint com,seller sel WHERE sel.seller_id = com.seller_id;";
-                      $result = mysqli_query($con, $sql);
-                      while($row = mysqli_fetch_assoc($result)) {
-                        echo '
-                          <tr>
-                            <td>
-                              <p>'.$row['complaint'].'(Seller:: '.$row['store_name'].')</p>
-                            </td>
-                            <td>
-                              <a href="blockseller.php">Take Action</a>
-                            </td>
-                          </tr>
-                        ';
-                      }
-                    ?>
-              </table>
-        </div>
-   </div>
-
-   <style>
-     .complaint-box {
-       position: fixed;
-       width: 100%;
-       height: 100%;
-       background: rgba(0,0,0,0.8);
-       backdrop-filter: blur(10px);
-       z-index: 3;
-       top: 0;
-       left: 0;
-       display: none;
-       justify-content: center;
-       align-items: center;
-     }
-     .inside-box {
-       padding: 16px;
-       background: white;
-       border-radius: 8px;
-     }
-   </style>
 </body>
 </html>

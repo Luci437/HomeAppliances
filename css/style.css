@@ -8195,3 +8195,8 @@ footer  p a:hover ,.footer p a:hover{
 	}
 }
 /***responsive***/
+.rating-box {
+	position: relative;
+	padding: 10px;
+	background: red;
+}

@@ -30,9 +30,10 @@ if(!isset($_SESSION['username'])) { //if not yet logged in
 		<script src="themes/js/superfish.js"></script>	
 		<script src="themes/js/jquery.scrolltotop.js"></script>
 		<script src="themes/js/jquery.fancybox.js"></script>
+		<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 		
 	</head>
-    <body>		
+    <body onload="updateRating()">		
 		<div id="top-bar" class="container">
 			<div class="row">
 				<div class="span4">
@@ -84,6 +85,13 @@ $rowc=mysqli_fetch_array($resultc);
 //$qry="select * from login,role where login.role_id=role.role_id";
       $qry="select * from product where product_id='$id' and status=1 and status1=1";
 $result=mysqli_query($con,$qry);
+$result2=mysqli_query($con,$qry);
+$ans = mysqli_fetch_assoc($result2);
+echo '<input type="hidden" id="sellerId" value="'.$ans["seller_id"].'">';
+$sellerid = $ans["seller_id"];
+$sql3 = "SELECT store_name FROM seller WHERE seller_id='$sellerid';";
+$sellerName = mysqli_fetch_assoc(mysqli_query($con, $sql3));
+
 
  $qa="select seller.store_name,seller.first_name,seller.last_name,seller.gst_no from seller,product where seller.seller_id=product.seller_id and product.product_id='$id'";
 $resa=mysqli_query($con,$qa);
@@ -161,33 +169,194 @@ while($row=mysqli_fetch_array($result)){
 								</script> <br>
 							</div>							
 						</div>
+						<script>
+							function checkRating(val) {
+								let el1 = document.getElementsByClassName('ratingStar');
+
+								for(let i=0;i<val;i++) {
+									el1[i].style.color = "yellow";
+								}
+								for(let j=val;j<el1.length;j++) {
+									el1[j].style.color = "grey";
+								}
+							}
+							let globalRating = false;
+							function catchStar(rate) {
+								let rating = $(rate).val();
+								let sellerId = $('#sellerId').val();
+								$.ajax({
+									url: "putRating.ajax.php",
+									type: 'POST',
+									data: {
+										rating: rating,
+										sellerId: sellerId
+									},
+									success: function(dataResult) {
+										checkRating(dataResult);
+										globalRating = dataResult;
+									}
+								});
+							}
+							function updateRating() {
+								setTimeout(() => {
+									let rating = $('#ratings').val();
+									console.log(globalRating);
+									if(globalRating) {
+										checkRating(globalRating);
+										console.log("inside");
+									}else {
+										checkRating(rating);
+									}
+
+									let sellerid = $('#sellerId').val();
+								$.ajax({
+									url: 'totalRating.ajax.php',
+									data: {
+										sellerId:sellerid
+									},
+									type: 'POST',
+									success: function(dataResult) {
+										let vals = dataResult.split(" ");
+										let totalReviewsGot = vals[1];
+										let totalReviews = vals[0];
+										let grandTotals = parseInt(totalReviews) * 5;
+										let percent = parseInt(totalReviewsGot / parseInt(grandTotals) * 100);
+										$('.actual-meter').css("width",percent+"%");
+										if(percent > 70) {
+											$('.actual-meter').css("background","green");
+										}else if(percent > 40) {
+											$('.actual-meter').css("background","yellow");
+										}else {
+											$('.actual-meter').css("background","red");
+										}
+									}
+								});
+								}, 100);
+							}
+						</script>
 						<div class="row">
+						<?php
+								require "dbcon.php";
+								if(isset($_SESSION['userid'])) {
+									$uid = $_SESSION['userid'];
+									$pid = $_GET['id'];
+									$sql1 = "SELECT * FROM product WHERE product_id='$pid';";
+									$res = mysqli_fetch_assoc(mysqli_query($con, $sql1));
+									$seller_id = $res['seller_id'];
+	
+									$sql2 = "SELECT * FROM sellerrating WHERE user_id='$uid' AND seller_id='$seller_id';";
+									$rep = mysqli_fetch_assoc(mysqli_query($con, $sql2));
+									echo '<input type="hidden" id="ratings" value="'.$rep['rating'].'">';
+								}
+
+							?>
 							<div class="span12">
 								<ul class="nav nav-tabs" id="myTab">
-									<li class="active"><a href="#home"><h4>Description</h4></a></li>
-									<li class=""><a href="#profile"><h4>Additional Information</h4></a></li>
+									<li class="active"><a href="#home"><h4>Rating</h4></a></li>
+									<li class=""><a href="#profile"><h4>Register Complaint</h4></a></li>
 								</ul>							 
-								<div class="tab-content">
-									<div class="tab-pane active" id="home"><?php echo $row[3];?></div>
+								<div class="tab-content" style="position: relative;">
+									<div class="tab-pane active" id="home">
+									<div class="tab-content">
+									<div class="tab-pane active" id="home">
+										<?php
+
+										if(isset($_SESSION['userid'])) {
+											echo '
+										<div class="rating-box">
+											<input type="radio" id="star1" name="rating" value="1" onclick="catchStar(this)" class="ratingInput">
+											<label for="star1"><i class="fas fa-star ratingStar" onmouseover="checkRating(1)" onmouseout="updateRating()"></i></label>
+											<input type="radio" id="star2" name="rating" value="2" onclick="catchStar(this)" class="ratingInput">
+											<label for="star2"><i class="fas fa-star ratingStar" onmouseover="checkRating(2)" onmouseout="updateRating()"></i></label>
+											<input type="radio" id="star3" name="rating" value="3" onclick="catchStar(this)" class="ratingInput">
+											<label for="star3"><i class="fas fa-star ratingStar" onmouseover="checkRating(3)" onmouseout="updateRating()"></i></label>
+											<input type="radio" id="star4" name="rating" value="4" onclick="catchStar(this)" class="ratingInput">
+											<label for="star4"><i class="fas fa-star ratingStar" onmouseover="checkRating(4)" onmouseout="updateRating()"></i></label>
+											<input type="radio" id="star5" name="rating" value="5" onclick="catchStar(this)" class="ratingInput">
+											<label for="star5"><i class="fas fa-star ratingStar" onmouseover="checkRating(5)" onmouseout="updateRating()"></i></label>
+										</div>';
+										}
+										?>
+
+										<div class="rating-meter-box">
+											<span style="display: flex;width: 200px;justify-content: space-around;">
+												<p>Bad</p>
+												<p>Medium</p>
+												<p>Good</p>
+											</span>
+											<div class="actual-meter"></div>
+										</div>
+									</div>
+									</div>
 									<div class="tab-pane" id="profile">
-										<table class="table table-striped shop_attributes">	
-											<tbody>
-												<tr class="">
-													<th>Size</th>
-													<td><?php echo $row['size'];?></td>
-												</tr>		
-												<tr class="alt">
-													<th>Colour</th>
-													<td><?php echo $row['color'];?></td>
-												</tr>
-											</tbody>
-										</table>
+										<h3>Register Complaint</h3>
+										<form class="complaint-box" method="POST" action="registerComplaint.php">
+											<input type="text" required class="complaint-input" name="complaint" style="padding: 16px;cursor: pointer;" placeholder="What is your problem against <?php echo $sellerName['store_name'] ?>">
+											<input type="hidden" value=<?php echo $ans["seller_id"] ?> name="sellerId">
+											<button class="complaint-button" type="submit" name="submit-complaint">Register</button>
+									</form>
 									</div>
 								</div>							
 							</div>
 							<?php
 								}
-								?>						
+								?>	
+								<style>
+									.complaint-button {
+										padding: 16px 40px;
+										background: linear-gradient(#5252e5,#610aaf);
+										border: none;
+										border-radius: 8px;
+										color: #fff;
+										font-weight: bold;
+										font-size: 14px;
+									}
+									.complaint-box {
+										display: flex;
+										column-gap: 8px;
+									}
+									.complaint-input {
+										width: 40%;
+										padding: 32px;
+										border-radius: 8px;
+									}
+									.rating-box {
+										position: relative;
+										padding: 10px;
+										display: flex;
+										column-gap: 16px;
+									}
+									.ratingInput {
+										display: none;
+									}
+									.ratingStar {
+										font-size: 44px;
+										color: grey;
+										position: relative;
+										overflow: hidden;
+									}
+									.ratingStar:hover {
+										color: yellow;
+									}
+									.rating-meter-box {
+										padding: 10px;
+										background: rgb(253,253,253);
+										position: absolute;
+										right: 0;
+										top: 0;
+										display: flex;
+										flex-direction: column;
+									}
+									.actual-meter {
+										position: relative;
+										width: 0%;
+										padding: 2px;
+										border-radius: 10px;
+										background: red;
+										z-index: 2;
+										transition: 0.4s ease;
+									}
+								</style>					
 							<div class="span9">	
 								<br>
 								<!--<h4 class="title">

@@ -14,6 +14,20 @@
         <script src="http://maps.google.com/maps/api/js?key=AIzaSyCHHWJWgWwDu5k1VAVEVc34k0QF16CXfQU&sensor=false" type="text/javascript"></script>
         <!-- <script src="https://maps.googleapis.com/maps/api/js"></script> -->
         <script type="text/javascript">
+            getLocation();
+            function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else { 
+                console.log("Geolocation is not supported by this browser.");
+            }
+            }
+
+            function showPosition(position) {
+                console.log("Latitude: " + position.coords.latitude +  position.coords.longitude);
+            }
+
+                addMarker(userLat, userLog, 'Your Location');
             //Sample code written by August Li
             var icon = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/blue.png",
                        new google.maps.Size(32, 32), new google.maps.Point(0, 0),
@@ -61,6 +75,7 @@
                         style: google.maps.NavigationControlStyle.ZOOM_PAN
                     }
                 });
+                
 <?php
 // $res= mysql_query("SELECT * FROM poi_example")or die(mysql_error());
  $sql="SELECT * FROM seller";
