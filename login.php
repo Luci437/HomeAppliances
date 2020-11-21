@@ -36,18 +36,21 @@ if($res)
 			$_SESSION["userid"]=$fetch['userid'];
 			$_SESSION["username"]=$username;	// setting username as session variable 
 	header("location:adminhome.php");	//home page or the dashboard page to be redirected
+	exit();
 	}
-	elseif($fetch['role_id']==2)   
+	elseif($fetch['role_id']==3)   
 		{
 		$_SESSION["username"]=$username;	// setting username as session variable 
 		$_SESSION["userid"]=$fetch['userid'];
 	header("location:seller/index.php");
+	exit();
 	}
-        elseif($fetch['role_id']==3)   
+        elseif($fetch['role_id']==2)   
 		{
 		$_SESSION["username"]=$username;	// setting username as session variable 
 		$_SESSION["userid"]=$fetch['userid'];
 	header("location:buyer/buyerhome.php");
+	exit();
 	}
 	}
         else

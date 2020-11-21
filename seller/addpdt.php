@@ -311,6 +311,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                         <textarea rows="5" cols="90" name="des" placeholder="Enter Product Description"></textarea>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label for="inputEmail3" class="col-sm-2 col-form-label">Year of Manufactures</label>
+                                    <div class="col-sm-10">
+                                    <input type="text" maxlength="4" name="yom" class="form-control" id="yom" placeholder="Enter Year of Manufacture" required="" >
+                                    </div>
+                                </div>
 								
 								
 								

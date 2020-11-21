@@ -23,6 +23,9 @@
             var currentPopup;
             var bounds = new google.maps.LatLngBounds();
             function addMarker(lat, lng, info) {
+                if(info == '<b>Your Location</b>') {
+                    icon = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/red.png");
+                }
                 var pt = new google.maps.LatLng(lat, lng);
                 bounds.extend(pt);
                 var marker = new google.maps.Marker({
@@ -80,10 +83,6 @@ while($row = mysqli_fetch_array($res))
 }
 
 ?>
- center = bounds.getCenter();
-     map.fitBounds(bounds);
-
-     }
 
 getLocation();
 function getLocation() {
@@ -96,8 +95,14 @@ function getLocation() {
 
 function showPosition(position) {
     console.log("Latitude: " + position.coords.latitude + "Longitude: " + position.coords.longitude);
-    addMarker(position.coords.latitude,position.coords.longitude,'Your Location');
+    addMarker(position.coords.latitude,position.coords.longitude,'<b>Your Location</b>');
 }
+
+ center = bounds.getCenter();
+     map.fitBounds(bounds);
+
+     }
+
      </script>
      </head>
      <body onLoad="initMap()" style="margin:0px; border:0px; padding:0px;">

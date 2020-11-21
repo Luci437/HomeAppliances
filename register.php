@@ -217,41 +217,28 @@ echo"<script>alert('Data Entered Successfully');</script>)";
 
 									</div>
 								</div><div class="control-group">
-									<label class="control-label"><b>Country:</b></label>
+									<label class="control-label"><b>State</b></label>
 									<div class="controls">
 	                            <!--<input type="text" placeholder="Enter your country"  class="input-xlarge" required/>-->
-	                            <select class="form-control" name="country_select" id="country_select" onChange="getState(this.value);" required/>
+	                            <select class="form-control" name="state_select" id="state_select" onChange="getDistrict(this.value);" required/>
 	                            
                  			    <option value="-1">select</option>
                            
 						            <?php
-						            $q = mysqli_query($con, "SELECT country_id,country_name FROM country where status=1");
+						            $q = mysqli_query($con, "SELECT state_id,state_name FROM state where status=1");
 						            //var_dump($q);
 
 						            while ($row = mysqli_fetch_array($q)) {
-						                echo '<option value=' . $row['country_id'] . '>' . $row['country_name'] . '</option>';
+						                echo '<option value=' . $row['state_id'] . '>' . $row['state_name'] . '</option>';
 						            }
 						            ?>
 						              </select>
-									</div>
-								</div><div class="control-group">
-									<label class="control-label"><b>State:</b></label>
-									<div class="controls">
-                                                                            <!--<input type="text" placeholder="Enter your state" id="state" name="state" class="input-xlarge" required/>-->
-                                                                            <select class="form-control" name="state_select" id="state_select" onChange="getDistrict(this.value);" required/><option value="-1">select</option></select>
 									</div>
 								</div><div class="control-group">
 									<label class="control-label"><b>District:</b></label>
 									<div class="controls">
                                                                             <!--<input type="text" placeholder="Enter your district" id="district" name="district" class="input-xlarge" required/>-->
 									<select class="form-control" name="district_select" id="district_select" onChange="getTown(this.value);" required/>
-                        <option value="-1">select</option></select>
-                                                                        </div>
-								</div><div class="control-group">
-									<label class="control-label"><b>City:</b></label>
-									<div class="controls">
-                                                                            <!--<input type="text" placeholder="Enter your town" id="town" name="town" class="input-xlarge" required/>-->
-                                                                            <select class="form-control" name="place_select" id="place_select" required/>
                         <option value="-1">select</option></select>
                                                                         </div>
 								</div>

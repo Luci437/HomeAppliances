@@ -9,6 +9,7 @@ $dis=$_POST['cost'];
 $cmp=$_POST['cmpname'];
 $size=$_POST['size'];
 $color=$_POST['color'];
+$yom=$_POST['yom'];
 
 $dea=$_POST['des'];
 //$img=$_POST['img'];
@@ -35,7 +36,7 @@ move_uploaded_file($t,"../uploads/".$c);
 } 
 
 
-$insert1="insert into product values(NULL,$pcat,'$name','$dea',$rate,$dis,'$y',0,0,'$a','$b','$c',$sid,'$cmp','$size','$color')";
+$insert1="insert into product values(NULL,$pcat,'$name','$dea',$rate,$dis,'$y',0,0,'$a','$b','$c',$sid,'$cmp','$size','$color','$yom')";
 $res=mysqli_query($con,$insert1);
 
 //$obj->exe($insert2);
